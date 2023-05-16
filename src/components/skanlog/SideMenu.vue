@@ -40,8 +40,8 @@
       </el-menu-item>
     </router-link>
 
-    <router-link to="/App">
-      <el-menu-item index="/App">
+    <router-link to="/AppPermission">
+      <el-menu-item index="/AppPermission">
         <el-icon><Menu /></el-icon>
         <span>App</span>
       </el-menu-item>
@@ -100,15 +100,15 @@ export default defineComponent({
   box-shadow: 0 0 2rem 0 rgb(136 152 170 / 15%);
 }
 #skanlogLogo {
-  max-height: 20px;
+  max-height: 25px;
   margin-top: 1em;
 }
 
-.sideBarHeader {
-  align-items: center;
-  justify-content: space-around;
-  min-width: 4em;
-}
+// .sideBarHeader {
+//   align-items: center;
+//   justify-content: space-around;
+//   min-width: 4em;
+// }
 
 a {
   color: inherit;

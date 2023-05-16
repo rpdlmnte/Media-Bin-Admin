@@ -29,7 +29,7 @@ const oidcAuthRoutes: Array<RouteRecordRaw> = [
 const generalRoutes: Array<RouteRecordRaw> = [
   {
     path: "/",
-    name: "File",
+    name: "Homepage",
     component: () =>
       import(/* webpackChunkName: "bundle.test" */ "@/views/Admin/File.vue"),
     // meta: {
@@ -37,40 +37,17 @@ const generalRoutes: Array<RouteRecordRaw> = [
     // }
   },
   {
-    path: "/File",
-    name: "File.vue",
+    path: "/AppPermission",
+    name: "AppPermission",
     component: () =>
-      import(/* webpackChunkName: "bundle.initial" */ "@/views/Admin/File.vue"),
+      import(
+        /* webpackChunkName: "bundle.initial" */ "@/views/Admin/AppPermission.vue"
+      ),
   },
 
-  {
-    path: "/",
-    name: "App",
-    component: () =>
-      import(/* webpackChunkName: "bundle.test" */ "@/views/Admin/App.vue"),
-    // meta: {
-    //   isPublic: true
-    // }
-  },
-  {
-    path: "/App",
-    name: "App.vue",
-    component: () =>
-      import(/* webpackChunkName: "bundle.initial" */ "@/views/Admin/App.vue"),
-  },
-
-  {
-    path: "/",
-    name: "User",
-    component: () =>
-      import(/* webpackChunkName: "bundle.test" */ "@/views/Admin/User.vue"),
-    // meta: {
-    //   isPublic: true
-    // }
-  },
   {
     path: "/User",
-    name: "User.vue",
+    name: "User",
     component: () =>
       import(/* webpackChunkName: "bundle.initial" */ "@/views/Admin/User.vue"),
   },
