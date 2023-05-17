@@ -12,55 +12,80 @@
           </div>
         </el-col>
       </el-row>
-      <!-- TABLE  -->
-      <el-table
-        :data="listOfAppPermission"
-        style="width: 100%"
-        v-loading="loading"
-      >
-        <el-table-column label="Application Name" prop="applicationName" />
-        <el-table-column align="right">
-          <template #default="scope">
-            <el-button
-              size="small"
-              type="primary"
-              @click="handleShowInfo(scope.row)"
-              round
-              >Info</el-button
-            >
-            <el-button
-              size="small"
-              type="danger"
-              @click="handleAction('delete', scope.row)"
-              >Delete</el-button
-            >
-            <el-switch
-              v-model="value"
-              size="small"
-              active-text="Active"
-              inactive-text="Suspend"
-            />
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-card>
 
+      <div class="bodyContent">
+        <div class="tableContent">
+          <div style="text-align: right">
+            <el-select
+              v-model="form.applicationName"
+              placeholder="Add App"
+              size="medium"
+              :style="{ width: '100px' }"
+            >
+              <el-option
+                v-for="applicationName in filteredAppPermission"
+                :key="applicationName.id"
+                :label="applicationName"
+              >
+              </el-option>
+            </el-select>
+          </div>
+
+          <el-table
+            :data="listOfAppPermission"
+            style="width: 100%"
+            v-loading="loading"
+          >
+            <el-table-column label="Application Name" prop="applicationName" />
+            <el-table-column align="right">
+              <template #default="scope">
+                <el-button
+                  size="small"
+                  type="primary"
+                  @click="handleShowInfo(scope.row)"
+                  round
+                  >Info</el-button
+                >
+                <el-button
+                  size="small"
+                  type="danger"
+                  @click="handleAction('delete', scope.row)"
+                  >Delete</el-button
+                >
+                <el-switch
+                  v-model="value"
+                  size="small"
+                  active-text="Active"
+                  inactive-text="Suspend"
+                />
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </div>
+    </el-card>
     <!-- Dialog -->
-    <el-dialog v-model="infoFormVisible" :title="AppSections">
-      <el-select v-model="form.sectionName" placeholder="Select Section">
-        <el-option
-          v-for="sectionName in filteredSections"
-          :key="sectionName.id"
-          :label="sectionName"
-        >
-        </el-option>
-      </el-select>
-      <el-form-item label="Name:" :label-width="formLabelWidth">
-        <span>{{ form.appId }}</span>
-        <span>{{ form.isActive }}</span>
+    <el-dialog v-model="infoFormVisible" :title="AppSections" align="right">
+      <el-button type="primary" @click="sectionVisible = true">
+        Add Section
+      </el-button>
+
+      <el-form-item label="Name: " :label-width="formLabelWidth">
         <span>{{ form.applicationName }}</span>
+      </el-form-item>
+      <el-form-item label="appId: " :label-width="formLabelWidth">
+        <span>{{ form.appId }}</span>
+      </el-form-item>
+      <el-form-item label="referralUrl: " :label-width="formLabelWidth">
         <span>{{ form.referralUrl }}</span>
       </el-form-item>
+    </el-dialog>
+    <!-- ADD SECTION DIALOG -->
+    <el-dialog
+      v-model="sectionVisible"
+      title="Add Section"
+      @keydown.esc="clearform()"
+    >
     </el-dialog>
   </div>
 </template>
@@ -78,6 +103,7 @@ export default defineComponent({
       listOfAppPermission: null,
       infoFormVisible: false,
       listOfSections: null,
+      sectionVisible: false,
       // selectedSectionName: "",
 
       form: reactive({
@@ -93,16 +119,16 @@ export default defineComponent({
       }),
     };
   },
-  computed: {
-    filteredSections() {
-      return this.listOfSections.filter((sectionName) => {
-        const listOfSections = this.listOfSections.find(
-          (section) => sectionName == section.name,
-        );
-        return !listOfSections || !listOfSections.sectionName;
-      });
-    },
-  },
+  // computed: {
+  //   filteredSections() {
+  //     return this.listOfSections.filter((sectionName) => {
+  //       const listOfSections = this.listOfSections.find(
+  //         (section) => sectionName == section.name,
+  //       );
+  //       return !listOfSections || !listOfSections.sectionName;
+  //     });
+  //   },
+  // },
   methods: {
     async getAppPermission() {
       await api.get("/AppPermission").then((response) => {
@@ -151,7 +177,5 @@ export default defineComponent({
 .bodyContent {
   padding-top: 0.5rem;
 }
-.newButton {
-  text-align: end;
-}
+//
 </style>
