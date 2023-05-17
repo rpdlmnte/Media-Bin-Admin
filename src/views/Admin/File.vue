@@ -12,73 +12,61 @@
             Folder
           </div>
         </el-col>
-        <!-- <el-col :span="5" class="text-right">
-          <div class="newButton">
-            <el-button type="primary" @click="showPlanTemplateDialog('New')">
-              New Button
-            </el-button>
-          </div>
-        </el-col> -->
       </el-row>
-      <!-- Top Level Menu -->
 
-      <!-- Content -->
-
-      <div>
-        <!-- Insert Grid here -->
-        <div v-if="errorLoading === false">
-          <!-- Display Control Area -->
-          <el-row>
-            <!-- Display Controls -->
-          </el-row>
-          <!-- Display Control Area -->
-
-          <!-- Grid or Table  Add Logic on DIV-->
-          <div class="bodyContent">
-            <!-- Grid or Table  Empty Data Logic Handler on DIV -->
-
-            <div class="tableContent">
-              <el-scrollbar always>
-                <!-- Main Content  -->
-                <el-icon><TrendCharts /></el-icon>
-              </el-scrollbar>
-            </div>
-
-            <el-empty description="Selected plan template is empty"> </el-empty>
-          </div>
-          <!-- Grid or Table -->
-
-          <!-- Emptry State Summary -->
-          <el-empty description="Please select a template to view"> </el-empty>
-          <!-- Emptry State Summary -->
+      <div class="bodyContent">
+        <div class="tableContent">
+          <el-table
+            :data="listOfAppPermission"
+            style="width: 100%"
+            v-loading="loading"
+          >
+          </el-table>
         </div>
       </div>
-
-      <!-- Content -->
     </el-card>
-    <!-- Dialog -->
-    <!-- Dialog -->
   </div>
 </template>
 
 <script>
-import { defineComponent } from "vue";
+import { defineComponent, reactive } from "vue";
 import api from "@/services/apiService";
 import { ElMessage } from "element-plus";
 import { Folder } from "@element-plus/icons";
 
 export default defineComponent({
-  name: "LastMilePlanTemplate",
+  name: "FileRestrictions",
   components: {
     Folder,
   },
-  data() {
-    return {};
-  },
-  methods: {},
-  created() {
-    // this.updateData();
-  },
+  // data() {
+  //   return {
+  //     listOfFileRestrictions: null,
+
+  //     form: reactive({
+  //       restrictionId: null,
+  //       sectionId: null,
+  //       maxFileSize: "",
+  //       resWidth: "",
+  //       resHeight: "",
+  //       width: "",
+  //       height: "",
+  //       sectionName: "",
+  //       applicationName: "",
+  //     }),
+  //   };
+  // },
+  // methods: {
+  //   async getFileRestrictions() {
+  //     await api.get("/FileRestrictions").then((response) => {
+  //       this.listOfFileRestrictions = response.data;
+  //       console.log(this.listOfFileRestrictions);
+  //     });
+  //   },
+  // },
+  // created() {
+  //   this.getFileRestrictions();
+  // },
 });
 </script>
 
