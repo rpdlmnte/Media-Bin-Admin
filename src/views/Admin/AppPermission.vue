@@ -67,70 +67,6 @@
       </div>
     </el-card>
     <!-- Dialog -->
-    <el-dialog v-model="infoFormVisible" :title="AppSections" align="right">
-      <el-button type="primary" @click="sectionVisible = true">
-        Add Section
-      </el-button>
-
-      <el-form-item label="Name: " :label-width="formLabelWidth">
-        <span>{{ form.applicationName }}</span>
-      </el-form-item>
-      <el-table :data="listOfSections" style="width: 100%" v-loading="loading">
-        <el-table-column label="Section Name" prop="sectionName">
-          <template v-slot="scope">
-            <el-collapse v-model="scope.row.isExpanded">
-              <el-collapse-item>
-                <template v-slot:title>
-                  <span>{{ scope.row.sectionName }}</span>
-                </template>
-                <el-row>
-                  <el-col align="right">
-                    <el-button size="small" @click="handleShowInfo(scope.row)">
-                      Edit
-                    </el-button>
-                    <el-button
-                      size="small"
-                      type="danger"
-                      @click="handleAction('delete', scope.row)"
-                    >
-                      Delete
-                    </el-button>
-                    <el-button
-                      size="small"
-                      type="primary"
-                      @click="handleShowInfo(scope.row)"
-                    >
-                      Add Restriction
-                    </el-button>
-                  </el-col>
-                </el-row>
-              </el-collapse-item>
-            </el-collapse>
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-dialog>
-    <!-- ADD SECTION DIALOG -->
-    <el-dialog
-      v-model="sectionVisible"
-      title="Enter Section Name"
-      @keydown.esc="clearform()"
-    >
-      <!-- <span>{{ form.sectionName }}</span> -->
-      <el-form :model="form">
-        <el-form-item label="Section Name: " :label-width="formLabelWidth">
-          <el-input v-model="form.sectionName" />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <span class="dialog-footer">
-          <!-- <el-button @click="clearForm()">Close</el-button> -->
-          <el-button type="primary" @click="createSection(form)"
-            >Confirm</el-button
-          >
-        </span>
-      </template>
-    </el-dialog>
   </div>
 </template>
 
@@ -170,67 +106,17 @@ export default defineComponent({
       }),
     };
   },
-  // computed: {
-  //   filteredSections() {
-  //     return this.listOfSections.filter((sectionName) => {
-  //       const listOfSections = this.listOfSections.find(
-  //         (section) => sectionName == section.name,
-  //       );
-  //       return !listOfSections || !listOfSections.sectionName;
-  //     });
-  //   },
-  // },
   methods: {
-    async createSection(form) {
-      console.log(form);
-      const formData = {
-        appId: form.appId,
-        sectionName: form.sectionName,
-      };
-      // formData.append("appId", form.appId);
-      // formData.append("sectionName", form.sectionName);
-      console.log(formData);
-      await api
-        .post("Section", formData)
-        .then(() => {
-          ElMessage.success("Section Created Successfuly!");
-          this.sectionVisible = false;
-        })
-        .catch(() => {
-          ElMessage.error("test");
-        });
-    },
     async getAppPermission() {
       await api.get("/AppPermission").then((response) => {
         this.listOfAppPermission = response.data;
         console.log(this.listOfAppPermission);
       });
     },
-    async getSection(appId) {
-      await api.get(`Section/${appId}`).then((response) => {
-        this.listOfSections = response.data;
-        console.log(this.listOfSections);
-      });
-    },
-    async getFileRestrictions(sectionId) {
-      await api.get(`FileRestrictions/${sectionId}`).then((response) => {
-        this.listOfFileRestrictions = response.data;
-        console.log(this.listOfFileRestrictions);
-      });
-    },
-
-    handleShowInfo(row) {
-      this.infoFormVisible = true;
-      this.form = row;
-      this.getSection(row.appId);
-      // console.log(this.infoFormVisible);
-    },
   },
 
   created() {
     this.getAppPermission();
-    this.getSection();
-    this.getFileRestrictions();
   },
 });
 </script>

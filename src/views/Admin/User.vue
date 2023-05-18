@@ -1,4 +1,4 @@
-<!-- <script>
+<script>
 import { defineComponent, reactive } from "vue";
 import api from "@/services/apiService";
 import { ElMessage } from "element-plus";
@@ -32,7 +32,7 @@ export default defineComponent({
         const grantedUser = this.listOfGrantedUsers.find(
           (granted) => granted.id === user.id,
         );
-        return !grantedUser || !grantedUser.isGranted;
+        return !grantedUser || !grantedUser.isActive;
       });
     },
     ...mapGetters({
@@ -116,7 +116,7 @@ export default defineComponent({
       await api
         .get(`/AdminUserManagement/CheckUser/${selectedUser.id}`)
         .then((response) => {
-          if (response.data.isGranted === false) {
+          if (response.data.isActive === false) {
             this.restoreGrant(response.data.id);
           } else {
             this.grantUser();
@@ -131,11 +131,13 @@ export default defineComponent({
     },
 
     async removeGrant() {
-      await api.patch(`AdminUserManagement/${this.selectedUserId}`).then(() => {
-        ElMessage.success("Grant removed from user!");
-        this.getGrantedUsers();
-        this.removeGrantVisible = false;
-      });
+      await api
+        .patch(`AdminUserManagement/RemoveGrant/${this.selectedUserId}`)
+        .then(() => {
+          ElMessage.success("Grant removed from user!");
+          this.getGrantedUsers();
+          this.removeGrantVisible = false;
+        });
     },
 
     async restoreGrant(id) {
@@ -150,12 +152,12 @@ export default defineComponent({
     this.getListOfUsers();
     this.getGrantedUsers();
   },
-  async mounted() {
-    const userID = this.oidcUser.sub;
-    //  await this.$store.dispatch("getUserRole", userID);
-  },
+  // async mounted() {
+  //   const userID = this.oidcUser.sub;
+  //    await this.$store.dispatch("getUserRole", userID);
+  // },
 });
-</script> -->
+</script>
 
 <template>
   <div>
