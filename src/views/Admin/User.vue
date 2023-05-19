@@ -3,6 +3,11 @@ import { defineComponent, reactive } from "vue";
 import api from "@/services/apiService";
 import { ElMessage } from "element-plus";
 import { mapGetters } from "vuex";
+<<<<<<< HEAD
+=======
+import appId from "@/configuration/appStore";
+
+>>>>>>> f6b6d3aa6986c28e465a98c27711630adfe4a393
 export default defineComponent({
   name: "User",
   data() {
