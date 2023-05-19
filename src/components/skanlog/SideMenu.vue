@@ -1,70 +1,91 @@
 <template>
   <!-- <div>
-      <el-icon v-if="isCollapse" @click="isCollapse = false">
-        <More />
-      </el-icon>
-      <el-icon v-else @click="isCollapse = true">
-        <ArrowLeftBold />
-      </el-icon>
-    </div> -->
+    <el-icon v-if="isCollapse" @click="isCollapse = false">
+      <More />
+    </el-icon>
+    <el-icon v-else @click="isCollapse = true">
+      <ArrowLeftBold />
+    </el-icon>
+  </div> -->
   <!-- <el-radio-group v-model="isCollapse" style="margin-bottom: 20px">
-      <el-radio-button :label="false">expand</el-radio-button>
-      <el-radio-button :label="true">collapse</el-radio-button>
-    </el-radio-group> -->
-  <el-menu
-    class="sideMenu"
-    :collapse="isCollapse"
-    active-text-color="#409EFF"
-    :default-active="activeLink"
-    text-color="#909399"
-    background-color="#FFFFFF"
-    :router="true"
-  >
-    <!-- <el-image
-			style="height: 20px"
-			src="@/assets/Images/logo.png"
-			:fit="fitType"
-			v-if="!isCollapse"
-		/> -->
-    <img
-      alt="Skanlog logo"
-      id="skanlogLogo"
-      src="@/assets/Images/SkanlogLogoHD.png"
-    />
+    <el-radio-button :label="false">expand</el-radio-button>
+    <el-radio-button :label="true">collapse</el-radio-button>
+  </el-radio-group> -->
+  <div>
+    <el-menu
+      class="sideMenu"
+      :collapse="isCollapse"
+      active-text-color="#409EFF"
+      :default-active="activeLink"
+      text-color="#909399"
+      background-color="#FFFFFF"
+      :router="true"
+    >
+      <el-menu-item class="logo">
+        <img
+          alt="Skanlog logo"
+          id="skanlogLogo"
+          src="@/assets/Images/SkanlogLogoHD.png"
+        />
+        <el-icon v-model="isCollapse" label="true"><Expand /></el-icon>
+      </el-menu-item>
 
-    <router-link to="/File">
       <el-menu-item index="/File">
-        <!-- <el-icon><Menu /></el-icon> -->
-        <el-icon><Files /></el-icon>
-        <span>File</span>
+        <el-tooltip
+          class="item-tooltip"
+          effect="dark"
+          content="File"
+          placement="right"
+        >
+          <router-link to="/File">
+            <el-icon><Files /></el-icon>
+            <span>File</span>
+          </router-link>
+        </el-tooltip>
       </el-menu-item>
-    </router-link>
 
-    <router-link to="/AppPermission">
       <el-menu-item index="/AppPermission">
-        <el-icon><Menu /></el-icon>
-        <span>App</span>
+        <el-tooltip
+          class="item-tooltip"
+          effect="dark"
+          content="App"
+          placement="right"
+        >
+          <router-link to="/AppPermission">
+            <el-icon><Menu /></el-icon>
+            <span>App</span>
+          </router-link>
+        </el-tooltip>
       </el-menu-item>
-    </router-link>
-    <router-link to="/User">
+
       <el-menu-item index="/User">
-        <el-icon><User /></el-icon>
-        <span>User</span>
+        <el-tooltip
+          class="item-tooltip"
+          effect="dark"
+          content="User"
+          placement="right"
+        >
+          <router-link to="/User">
+            <el-icon><UserFilled /></el-icon>
+            <span>User</span>
+          </router-link>
+        </el-tooltip>
       </el-menu-item>
-    </router-link>
-  </el-menu>
+    </el-menu>
+  </div>
 </template>
 
 <script>
 import { defineComponent, ref } from "vue";
-import { Menu, Files, User } from "@element-plus/icons";
+import { Menu, Files, UserFilled, Expand } from "@element-plus/icons";
 
 export default defineComponent({
   name: "SideMenu",
   components: {
     Menu,
     Files,
-    User,
+    UserFilled,
+    Expand,
   },
   mounted() {
     this.activeLink = this.$route.path;
@@ -99,7 +120,7 @@ export default defineComponent({
   border-style: solid;
   box-shadow: 0 0 2rem 0 rgb(136 152 170 / 15%);
 }
-#skanlogLogo {
+.logo {
   max-height: 25px;
   margin-top: 1em;
 }

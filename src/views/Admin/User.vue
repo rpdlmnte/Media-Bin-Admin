@@ -3,7 +3,6 @@ import { defineComponent, reactive } from "vue";
 import api from "@/services/apiService";
 import { ElMessage } from "element-plus";
 import { mapGetters } from "vuex";
-
 export default defineComponent({
   name: "User",
   data() {
@@ -172,13 +171,22 @@ export default defineComponent({
             Admin User Management
           </div>
         </el-col>
-        <el-col :span="5" class="text-right">
+        <div class="demo-input-size">
+          <el-input
+            class="w-50 m-2"
+            size="small"
+            placeholder="Type to search user"
+            :suffix-icon="Search"
+          />
+        </div>
+
+        <!-- <el-col :span="5" class="text-right">
           <div class="newButton">
             <el-button type="primary" @click="grantUserVisible = true">
               Grant User
             </el-button>
           </div>
-        </el-col>
+        </el-col> -->
       </el-row>
       <!-- Top Level Menu -->
 
@@ -200,7 +208,7 @@ export default defineComponent({
                 <div class="tableContent">
                   <el-scrollbar always>
                     <el-table
-                      :data="listOfGrantedUsers"
+                      :data="listOfUsers"
                       style="width: 100%"
                       v-loading="loading"
                     >
@@ -241,7 +249,7 @@ export default defineComponent({
 
     <!-- Dialog -->
     <!-- Grant User Dialog -->
-    <el-dialog
+    <!-- <el-dialog
       v-model="grantUserVisible"
       title="Grant Acces"
       @keydown.esc="clearForm()"
@@ -267,7 +275,7 @@ export default defineComponent({
           >
         </span>
       </template>
-    </el-dialog>
+    </el-dialog> -->
     <!-- Grant User Dialog -->
 
     <!-- Delete Dialog -->
@@ -321,7 +329,11 @@ export default defineComponent({
   max-height: calc(82vh - 32px);
   overflow: auto;
 }
-
+/* .el-input {
+  weight: 24px;
+  line-height: 24px;
+  padding: 0 7px;
+} */
 .bodyContent {
   padding-top: 0.5rem;
 }
