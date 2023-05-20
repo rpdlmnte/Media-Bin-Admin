@@ -1,16 +1,15 @@
 <template>
-  <!-- <div>
+  <div>
     <el-icon v-if="isCollapse" @click="isCollapse = false">
       <More />
     </el-icon>
+    <e-icon v-if="isCollapse" @click="isCollapse = false">
+      <Expand />
+    </e-icon>
     <el-icon v-else @click="isCollapse = true">
-      <ArrowLeftBold />
+      <Expand />
     </el-icon>
-  </div> -->
-  <!-- <el-radio-group v-model="isCollapse" style="margin-bottom: 20px">
-    <el-radio-button :label="false">expand</el-radio-button>
-    <el-radio-button :label="true">collapse</el-radio-button>
-  </el-radio-group> -->
+  </div>
   <div>
     <el-menu
       class="sideMenu"
@@ -27,49 +26,27 @@
           id="skanlogLogo"
           src="@/assets/Images/SkanlogLogoHD.png"
         />
-        <el-icon v-model="isCollapse" label="true"><Expand /></el-icon>
       </el-menu-item>
 
       <el-menu-item index="/File">
-        <el-tooltip
-          class="item-tooltip"
-          effect="dark"
-          content="File"
-          placement="right"
-        >
-          <router-link to="/File">
-            <el-icon><Files /></el-icon>
-            <span>File</span>
-          </router-link>
-        </el-tooltip>
+        <router-link to="/File">
+          <el-icon><Files /></el-icon>
+          <span>File</span>
+        </router-link>
       </el-menu-item>
 
       <el-menu-item index="/AppPermission">
-        <el-tooltip
-          class="item-tooltip"
-          effect="dark"
-          content="App"
-          placement="right"
-        >
-          <router-link to="/AppPermission">
-            <el-icon><Menu /></el-icon>
-            <span>App</span>
-          </router-link>
-        </el-tooltip>
+        <router-link to="/AppPermission">
+          <el-icon><Menu /></el-icon>
+          <span>App</span>
+        </router-link>
       </el-menu-item>
 
       <el-menu-item index="/User">
-        <el-tooltip
-          class="item-tooltip"
-          effect="dark"
-          content="User"
-          placement="right"
-        >
-          <router-link to="/User">
-            <el-icon><UserFilled /></el-icon>
-            <span>User</span>
-          </router-link>
-        </el-tooltip>
+        <router-link to="/User">
+          <el-icon><UserFilled /></el-icon>
+          <span>User</span>
+        </router-link>
       </el-menu-item>
     </el-menu>
   </div>
@@ -114,23 +91,23 @@ export default defineComponent({
 </script>
 <style lang="scss" scoped>
 .sideMenu {
+  // width: 15rem;
   height: 98vh;
   background-color: #ffffff;
   border-width: 0 0 0 0;
   border-style: solid;
   box-shadow: 0 0 2rem 0 rgb(136 152 170 / 15%);
+  min-width: 4em;
+  overflow: hidden;
+  transition: 0.2s ease-in-out;
 }
 .logo {
   max-height: 25px;
   margin-top: 1em;
+  img {
+    width: 5rem;
+  }
 }
-
-// .sideBarHeader {
-//   align-items: center;
-//   justify-content: space-around;
-//   min-width: 4em;
-// }
-
 a {
   color: inherit;
   text-decoration: none !important;

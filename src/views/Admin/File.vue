@@ -13,20 +13,21 @@
           </div>
         </el-col>
       </el-row>
-
-      <div class="bodyContent">
-        <div class="tableContent">
-          <el-table
-            :data="listOfFileUpload"
-            style="width: 100%"
-            v-loading="loading"
-          >
-            <el-table-column label="File" prop="file">
-              <span>{{ form.appId }}</span>
-            </el-table-column>
-          </el-table>
+      <el-skeleton :loading="loading" animated :count="1" :throttle="500">
+        <div class="bodyContent">
+          <div class="tableContent">
+            <el-table
+              :data="listOfFileUpload"
+              style="width: 100%"
+              v-loading="loading"
+            >
+              <el-table-column label="File" prop="file">
+                <span>{{ form.appId }}</span>
+              </el-table-column>
+            </el-table>
+          </div>
         </div>
-      </div>
+      </el-skeleton>
     </el-card>
   </div>
 </template>
