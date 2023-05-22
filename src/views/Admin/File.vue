@@ -13,17 +13,21 @@
           </div>
         </el-col>
       </el-row>
-
-      <div class="bodyContent">
-        <div class="tableContent">
-          <el-table
-            :data="listOfAppPermission"
-            style="width: 100%"
-            v-loading="loading"
-          >
-          </el-table>
+      <el-skeleton :loading="loading" animated :count="1" :throttle="500">
+        <div class="bodyContent">
+          <div class="tableContent">
+            <el-table
+              :data="listOfFileUpload"
+              style="width: 100%"
+              v-loading="loading"
+            >
+              <el-table-column label="File" prop="file">
+                <span>{{ form.appId }}</span>
+              </el-table-column>
+            </el-table>
+          </div>
         </div>
-      </div>
+      </el-skeleton>
     </el-card>
   </div>
 </template>
@@ -33,40 +37,42 @@ import { defineComponent, reactive } from "vue";
 import api from "@/services/apiService";
 import { ElMessage } from "element-plus";
 import { Folder } from "@element-plus/icons";
+import appId from "@/configuration/appStore";
 
 export default defineComponent({
-  name: "FileRestrictions",
+  name: "Files",
   components: {
     Folder,
   },
-  // data() {
-  //   return {
-  //     listOfFileRestrictions: null,
+  data() {
+    return {
+      listOfFileUpload: null,
 
-  //     form: reactive({
-  //       restrictionId: null,
-  //       sectionId: null,
-  //       maxFileSize: "",
-  //       resWidth: "",
-  //       resHeight: "",
-  //       width: "",
-  //       height: "",
-  //       sectionName: "",
-  //       applicationName: "",
-  //     }),
-  //   };
-  // },
-  // methods: {
-  //   async getFileRestrictions() {
-  //     await api.get("/FileRestrictions").then((response) => {
-  //       this.listOfFileRestrictions = response.data;
-  //       console.log(this.listOfFileRestrictions);
-  //     });
-  //   },
-  // },
-  // created() {
-  //   this.getFileRestrictions();
-  // },
+      form: reactive({
+        appId: null,
+        // restrictionId: null,
+        // sectionId: null,
+        // maxFileSize: "",
+        // resWidth: "",
+        // resHeight: "",
+        // width: "",
+        // height: "",
+        // sectionName: "",
+        // applicationName: "",
+      }),
+    };
+  },
+  methods: {
+    async getFileUpload() {
+      await api.get(`FileUpload${Id}`).then((response) => {
+        this.listOfFileUpload = response.data;
+        console.log(this.listOfFileUpload);
+      });
+    },
+  },
+  created() {
+    this.getFileUpload();
+  },
 });
 </script>
 
