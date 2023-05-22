@@ -1,161 +1,3 @@
-<script>
-import { defineComponent, reactive } from "vue";
-import api from "@/services/apiService";
-import { ElMessage } from "element-plus";
-import { mapGetters } from "vuex";
-
-export default defineComponent({
-  name: "User",
-  data() {
-    return {
-      loading: false,
-      errorLoading: false,
-      listOfApplications: null,
-      listOfGrantedApplications: null,
-      grantApplicationVisible: false,
-      removeGrantVisible: false,
-      selectedUserId: "",
-
-      form: reactive({
-        //MediaSliderManager Properties
-        id: "",
-        firstName: "",
-        lastName: "",
-        email: "",
-      }),
-    };
-  },
-  computed: {
-    filteredUsers() {
-      return this.listOfApplications.filter((user) => {
-        // check if the user has been granted access
-        const grantedUser = this.listOfGrantedApplications.find(
-          (granted) => granted.id === user.id,
-        );
-        return !grantedUser || !grantedUser.isActive;
-      });
-    },
-    ...mapGetters({
-      user: "returnUserRole",
-      oidcUser: "oidcStore/oidcUser",
-    }),
-  },
-  methods: {
-    async clearForm() {
-      this.grantApplicationVisible = false;
-      this.form = {
-        id: "",
-        firstName: "",
-        lastName: "",
-        email: "",
-      };
-    },
-
-    async getlistOfApplications() {
-      await api
-        .get(
-          `https://gateway.api.siweb01.vm.aws.cloud.skanlog.com/api/User/${this.oidcUser.sub}/AllApps`,
-        )
-        .then((response) => {
-          this.listOfApplications = response.data;
-          console.log("list of Applications: ", this.listOfApplications);
-        })
-        .catch((error) => {
-          ElMessage.error("Failed to retrieve data from the server.");
-          console.error(error);
-        });
-    },
-
-    async getGrantedUsers() {
-      this.loading = true;
-      await api
-        .get("/AdminUserManagement")
-        .then((response) => {
-          this.listOfGrantedApplications = response.data;
-        })
-        .catch((error) => {
-          ElMessage.error("Failed to retrieve data from the server.");
-          console.error(error);
-        });
-      this.loading = false;
-    },
-    async grantUser() {
-      const selectedUserId = this.form.id;
-      const selectedUser = this.listOfApplications.find(
-        (user) => user.id === selectedUserId,
-      );
-      const payload = {
-        id: selectedUser.id,
-        firstName: selectedUser.firstName,
-        lastName: selectedUser.lastName,
-        email: selectedUser.email,
-      };
-      try {
-        await api.post("/AdminUserManagement/", payload);
-        this.grantApplicationVisible = false;
-        this.getGrantedUsers();
-        ElMessage.success("User successfully granted access.");
-      } catch (error) {
-        ElMessage.error("Error adding grant.");
-      }
-    },
-
-    handleRemoveGrant(row) {
-      this.removeGrantVisible = true;
-      this.selectedUserId = row.id;
-    },
-
-    async checkExistingUserDb() {
-      const selectedUserId = this.form.id;
-      const selectedUser = this.listOfApplications.find(
-        (user) => user.id === selectedUserId,
-      );
-      await api
-        .get(`/AdminUserManagement/CheckUser/${selectedUser.id}`)
-        .then((response) => {
-          if (response.data.isActive === false) {
-            this.restoreGrant(response.data.id);
-          } else {
-            this.grantUser();
-          }
-          this.clearForm();
-        })
-        .catch((error) => {
-          ElMessage.error("Failed to retrieve user data from the server.");
-          console.error(error);
-          this.clearForm();
-        });
-    },
-
-    async removeGrant() {
-      await api
-        .patch(`AdminUserManagement/RemoveGrant/${this.selectedUserId}`)
-        .then(() => {
-          ElMessage.success("Grant removed from user!");
-          this.getGrantedUsers();
-          this.removeGrantVisible = false;
-        });
-    },
-
-    async restoreGrant(id) {
-      await api.patch(`AdminUserManagement/RestoreGrant/${id}`).then(() => {
-        ElMessage.success("Grant added to user!");
-        this.getGrantedUsers();
-        this.grantApplicationVisible = false;
-      });
-    },
-  },
-  created() {
-    this.getlistOfApplications();
-    this.getGrantedUsers();
-  },
-  async mounted() {
-    const userID = this.oidcUser.sub;
-    await this.$store.dispatch("getUserRole", userID);
-  },
-});
-</script>
-
 <template>
   <div>
     <!-- Body Card -->
@@ -169,13 +11,7 @@ export default defineComponent({
             Admin User Management
           </div>
         </el-col>
-        <el-col :span="5" class="text-right">
-          <div class="newButton">
-            <el-button type="primary" @click="grantApplicationVisible = true">
-              Grant User
-            </el-button>
-          </div>
-        </el-col>
+        <el-col :span="5" class="text-right"> </el-col>
       </el-row>
       <!-- Top Level Menu -->
 
@@ -197,15 +33,23 @@ export default defineComponent({
                 <div class="tableContent">
                   <el-scrollbar always>
                     <el-table
-                      :data="listOfGrantedApplications"
+                      :data="listOfApplications"
                       style="width: 100%"
                       v-loading="loading"
                     >
-                      <el-table-column label="First Name" prop="firstName" />
-                      <el-table-column label="Last Name" prop="lastName" />
-                      <el-table-column label="Email" prop="email" />
+                      <el-table-column label="Application Name" prop="name" />
+                      <el-table-column
+                        label="Application Link"
+                        prop="appLink"
+                      />
                       <el-table-column align="right">
                         <template #default="scope">
+                          <el-button
+                            size="small"
+                            type="primary"
+                            @click="handleRemoveGrant(scope.row)"
+                            >Grant Access</el-button
+                          >
                           <el-button
                             size="small"
                             type="danger"
@@ -243,23 +87,11 @@ export default defineComponent({
       title="Grant Acces"
       @keydown.esc="clearForm()"
     >
-      <el-form :model="form" :label-position="labelPosition">
-        <el-form-item label="Select User: " :label-width="formLabelWidth">
-          <el-select v-model="form.id" placeholder="Select User">
-            <el-option
-              v-for="users in filteredUsers"
-              :key="users.id"
-              :label="users.fullName"
-              :value="users.id"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
+      Are you sure you want to grant access to this application?
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="clearForm()">Cancel</el-button>
-          <el-button type="primary" @click="checkExistingUserDb()"
+          <el-button type="primary" @click="grantApplication()"
             >Confirm</el-button
           >
         </span>
@@ -275,7 +107,9 @@ export default defineComponent({
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="removeGrantVisible = false">Cancel</el-button>
-          <el-button type="primary" @click="removeGrant()">Confirm</el-button>
+          <el-button type="primary" @click="grantApplication()"
+            >Confirm</el-button
+          >
         </span>
       </template>
     </el-dialog>
@@ -283,6 +117,144 @@ export default defineComponent({
     <!-- Dialog -->
   </div>
 </template>
+
+<script>
+import { defineComponent, reactive } from "vue";
+import api from "@/services/apiService";
+import { ElMessage } from "element-plus";
+import { mapGetters } from "vuex";
+import { mockApplicationList } from "@/mockApplicationsList.js";
+
+export default defineComponent({
+  name: "User",
+  data() {
+    return {
+      loading: false,
+      errorLoading: false,
+      listOfApplications: mockApplicationList,
+      listOfGrantedApplications: null,
+      grantApplicationVisible: false,
+      removeGrantVisible: false,
+      selectedUserId: "",
+
+      form: reactive({
+        //MediaSliderManager Properties
+        id: "",
+        firstName: "",
+        lastName: "",
+        email: "",
+      }),
+    };
+  },
+  computed: {
+    filteredApplications() {
+      return this.listOfApplications.filter((application) => {
+        // check if the user has been granted access
+        const grantedApplication = this.listOfGrantedApplications.find(
+          (active) => active.appId === application.appID,
+        );
+        return !grantedApplication || !grantedApplication.isActive;
+      });
+    },
+    ...mapGetters({
+      user: "returnUserRole",
+      oidcUser: "oidcStore/oidcUser",
+    }),
+  },
+  methods: {
+    async clearForm() {
+      this.grantApplicationVisible = false;
+      this.form = {
+        appID: "",
+        name: "",
+        appLink: "",
+      };
+    },
+
+    async getGrantedApplications() {
+      this.loading = true;
+      await api
+        .get("AppPermission")
+        .then((response) => {
+          this.listOfGrantedApplications = response.data;
+        })
+        .catch((error) => {
+          ElMessage.error("Failed to retrieve data from the server.");
+          console.error(error);
+        });
+      this.loading = false;
+    },
+    async grantApplication() {
+      const selectedUserId = this.form.id;
+      const selectedUser = this.listOfApplications.find(
+        (user) => user.id === selectedUserId,
+      );
+      const payload = {
+        appId: this.form.appID,
+        referralUrl: this.form.appLink,
+        applicationName: this.form.name,
+      };
+      console.log("payload", payload);
+      try {
+        await api.post("AppPermission", payload);
+        this.grantApplicationVisible = false;
+        this.getGrantedApplications();
+        ElMessage.success("Application successfully granted access.");
+      } catch (error) {
+        ElMessage.error("Error adding grant.");
+      }
+    },
+
+    handleRemoveGrant(row) {
+      this.removeGrantVisible = true;
+      this.form = row;
+    },
+
+    async checkExistingUserDb() {
+      const selectedApplicationId = this.form.id;
+      const selectedApplication = this.listOfApplications.find(
+        (user) => user.id === selectedApplicationId,
+      );
+      await api
+        .get(`AppPermission/CheckApplication/${selectedApplication.id}`)
+        .then((response) => {
+          if (response.data.isActive === false) {
+            this.restoreGrant(response.data.id);
+          } else {
+            this.grantUser();
+          }
+          this.clearForm();
+        })
+        .catch((error) => {
+          ElMessage.error("Failed to retrieve user data from the server.");
+          console.error(error);
+          this.clearForm();
+        });
+    },
+
+    async removeGrant() {
+      await api
+        .patch(`AdminUserManagement/RemoveGrant/${this.selectedUserId}`)
+        .then(() => {
+          ElMessage.success("Grant removed from user!");
+          this.getGrantedApplications();
+          this.removeGrantVisible = false;
+        });
+    },
+
+    async restoreGrant(id) {
+      await api.patch(`AdminUserManagement/RestoreGrant/${id}`).then(() => {
+        ElMessage.success("Grant added to user!");
+        this.getGrantedApplications();
+        this.grantApplicationVisible = false;
+      });
+    },
+  },
+  created() {
+    this.getGrantedApplications();
+  },
+});
+</script>
 
 <style>
 .my-autocomplete {
