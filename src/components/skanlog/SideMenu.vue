@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <!-- <div>
     <el-icon v-if="isCollapse" @click="isCollapse = false">
       <More />
     </el-icon>
@@ -10,24 +10,25 @@
       <Expand />
     </el-icon>
   </div>
-  <div>
-    <el-menu
-      class="sideMenu"
-      :collapse="isCollapse"
-      active-text-color="#409EFF"
-      :default-active="activeLink"
-      text-color="#909399"
-      background-color="#FFFFFF"
-      :router="true"
-    >
-      <el-menu-item class="logo">
-        <img
-          alt="Skanlog logo"
-          id="skanlogLogo"
-          src="@/assets/Images/SkanlogLogoHD.png"
-        />
-      </el-menu-item>
+  <div> -->
+  <el-menu
+    class="sideMenu"
+    :collapse="isCollapse"
+    active-text-color="#409EFF"
+    :default-active="activeLink"
+    text-color="#909399"
+    background-color="#FFFFFF"
+    :router="true"
+  >
+    <el-menu-item class="logo">
+      <img
+        alt="Skanlog logo"
+        id="skanlogLogo"
+        src="@/assets/Images/SkanlogLogoHD.png"
+      />
+    </el-menu-item>
 
+    <div class="menu-items">
       <el-menu-item index="/File">
         <router-link to="/File">
           <el-icon><Files /></el-icon>
@@ -48,13 +49,13 @@
           <span>User</span>
         </router-link>
       </el-menu-item>
-    </el-menu>
-  </div>
+    </div>
+  </el-menu>
 </template>
 
 <script>
 import { defineComponent, ref } from "vue";
-import { Menu, Files, UserFilled, Expand } from "@element-plus/icons";
+import { Menu, Files, UserFilled } from "@element-plus/icons";
 
 export default defineComponent({
   name: "SideMenu",
@@ -62,7 +63,6 @@ export default defineComponent({
     Menu,
     Files,
     UserFilled,
-    Expand,
   },
   mounted() {
     this.activeLink = this.$route.path;
@@ -98,14 +98,17 @@ export default defineComponent({
   border-style: solid;
   box-shadow: 0 0 2rem 0 rgb(136 152 170 / 15%);
   min-width: 4em;
-  overflow: hidden;
-  transition: 0.2s ease-in-out;
+  // overflow: hidden;
+  // transition: 0.2s ease-in-out;
+}
+.menu-items {
+  margin: 1em;
 }
 .logo {
-  max-height: 25px;
+  max-height: 3em;
   margin-top: 1em;
   img {
-    width: 5rem;
+    width: 8em;
   }
 }
 a {
