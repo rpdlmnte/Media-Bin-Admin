@@ -27,29 +27,26 @@
         src="@/assets/Images/SkanlogLogoHD.png"
       />
     </el-menu-item>
+    <el-menu-item index="/File">
+      <router-link to="/File">
+        <el-icon><Files /></el-icon>
+        <span>File</span>
+      </router-link>
+    </el-menu-item>
 
-    <div class="menu-items">
-      <el-menu-item index="/File">
-        <router-link to="/File">
-          <el-icon><Files /></el-icon>
-          <span>File</span>
-        </router-link>
-      </el-menu-item>
+    <el-menu-item index="/AppPermission">
+      <router-link to="/AppPermission">
+        <el-icon><Menu /></el-icon>
+        <span>App</span>
+      </router-link>
+    </el-menu-item>
 
-      <el-menu-item index="/AppPermission">
-        <router-link to="/AppPermission">
-          <el-icon><Menu /></el-icon>
-          <span>App</span>
-        </router-link>
-      </el-menu-item>
-
-      <el-menu-item index="/User">
-        <router-link to="/User">
-          <el-icon><UserFilled /></el-icon>
-          <span>User</span>
-        </router-link>
-      </el-menu-item>
-    </div>
+    <el-menu-item index="/User">
+      <router-link to="/User">
+        <el-icon><UserFilled /></el-icon>
+        <span>User</span>
+      </router-link>
+    </el-menu-item>
   </el-menu>
 </template>
 
@@ -98,17 +95,14 @@ export default defineComponent({
   border-style: solid;
   box-shadow: 0 0 2rem 0 rgb(136 152 170 / 15%);
   min-width: 4em;
-  // overflow: hidden;
-  // transition: 0.2s ease-in-out;
-}
-.menu-items {
-  margin: 1em;
+  overflow: hidden;
+  transition: 0.2s ease-in-out;
 }
 .logo {
-  max-height: 3em;
+  max-height: 25px;
   margin-top: 1em;
   img {
-    width: 8em;
+    width: 7em;
   }
 }
 a {
