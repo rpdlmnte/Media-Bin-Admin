@@ -4,7 +4,6 @@ import api from "@/services/apiService";
 import { ElMessage } from "element-plus";
 import { mapGetters } from "vuex";
 
-
 import appId from "@/configuration/appStore";
 
 export default defineComponent({
