@@ -19,11 +19,12 @@
           <el-table :data="listOfApplication" style="width: 100%">
             <el-table-column label="Files" prop="file">
               <template #default="{ row }">
-                <!-- <i class="fas fa-folder"></i> -->
                 <div class="folder">
-                  <el-icon size="100"><Folder /></el-icon>
+                  <el-icon size="100" @click="getListOfFiles(row.appId)"
+                    ><Folder
+                  /></el-icon>
                 </div>
-                <span @click="test()">{{ row.applicationName }}</span>
+                <span>{{ row.applicationName }}</span>
               </template>
             </el-table-column>
           </el-table>
@@ -56,17 +57,20 @@ export default defineComponent({
         userId: null,
         width: "",
         height: "",
-        Files: "",
+        fileName: "",
+        fileType: "",
+        filePath: "",
         isActive: "",
         applicationName: "",
         referralUrl: "",
+        fileId: "",
       }),
     };
   },
   methods: {
-    test() {
-      ElMessage("I was clicked");
-    },
+    // test() {
+    //   ElMessage("I was clicked");
+    // },
     async clearForm() {
       this.grantUserVisible = false;
       this.form = {
@@ -80,12 +84,13 @@ export default defineComponent({
         referralUrl: "",
       };
     },
-    async getListOfFiles() {
+    async getListOfFiles(appId) {
+      console.log("appId", appId);
       await api
-        .get(`FileUpload/${this.appId}`)
+        .get(`FileUpload/${appId}`)
         .then((response) => {
           this.listOfFiles = response.data;
-          console.log("tesr", this.listOfFiles);
+          console.log("listOfFiles", this.listOfFiles);
         })
         .catch((error) => {
           console.error(error);
