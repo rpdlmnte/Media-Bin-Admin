@@ -10,6 +10,7 @@ export default defineComponent({
   name: "User",
   data() {
     return {
+      inputValue: "",
       loading: false,
       errorLoading: false,
       listOfUsers: null,
@@ -29,10 +30,15 @@ export default defineComponent({
   },
   computed: {
     filteredUsers() {
+      if (!this.inputValue) {
+        return this.listOfUsers;
+      }
+      const searchValue = this.searchValue.toLoweCase();
       return this.listOfUsers.filter((user) => {
-        // check if the user has been granted access
+        // Filter out granted users
         const grantedUser = this.listOfGrantedUsers.find(
           (granted) => granted.id === user.id,
+          user.Name.toLoweCase().includes(searchValue),
         );
         return !grantedUser || !grantedUser.isActive;
       });
@@ -52,7 +58,9 @@ export default defineComponent({
         email: "",
       };
     },
-
+    hadleSearchInputChange(value) {
+      this.inputValue = value;
+    },
     async getListOfUsers() {
       await api
         .get("https://users.test.skanlog.com/api/v1/users")
@@ -167,32 +175,15 @@ export default defineComponent({
     <el-card shadow="hover" class="menuCard">
       <!-- Top Level Menu -->
       <el-row class="item">
-        <el-col class="titleHeader" :span="5">
+        <el-col class="titleHeader" :span="10">
           <div
             :style="`font-size: var(--el-font-size-extra-large); text-align: left`"
           >
             Admin User Management
           </div>
         </el-col>
-        <div class="demo-input-size">
-          <el-input
-            class="w-50 m-2"
-            size="default"
-            placeholder="Type to search user"
-            :suffix-icon="Search"
-          />
-        </div>
-
-        <!-- <el-col :span="5" class="text-right">
-          <div class="newButton">
-            <el-button type="primary" @click="grantUserVisible = true">
-              Grant User
-            </el-button>
-          </div>
-        </el-col> -->
       </el-row>
       <!-- Top Level Menu -->
-
       <!-- Content -->
       <el-skeleton :loading="loading" animated :count="1" :throttle="500">
         <template #default>
@@ -208,6 +199,7 @@ export default defineComponent({
               <!-- Grid or Table  Add Logic on DIV-->
               <div class="bodyContent">
                 <!-- Grid or Table  Empty Data Logic Handler on DIV -->
+
                 <div class="tableContent">
                   <el-scrollbar always>
                     <el-table
@@ -219,24 +211,36 @@ export default defineComponent({
                       <el-table-column label="Last Name" prop="lastName" />
                       <el-table-column label="Email" prop="email" />
                       <el-table-column align="right">
+                        <template #header>
+                          <el-input
+                            class="w-50 m-2"
+                            size="small"
+                            placeholder="Type to search user"
+                            :suffix-icon="Search"
+                            v-model="inputValue"
+                            @input="handleSearchInputChange"
+                          />
+                        </template>
                         <template #default="scope">
-                          <el-button
+                          <!-- <el-button
                             size="small"
                             type="danger"
                             @click="handleRemoveGrant(scope.row)"
-                            >Remove Grant</el-button
+                            >Ungrant</el-button
+                          > -->
+                          <el-button
+                            size="small"
+                            type="primary"
+                            @click="handeGrantUser(scope.row)"
+                            >Grant User</el-button
                           >
                         </template>
                       </el-table-column>
                     </el-table>
-                    <!-- Main Content  -->
                   </el-scrollbar>
                 </div>
               </div>
               <!-- Grid or Table -->
-
-              <!-- Emptry State Summary -->
-              <!-- Emptry State Summary -->
             </div>
 
             <!-- Error Loading Empty state -->
@@ -249,38 +253,6 @@ export default defineComponent({
       </el-skeleton>
       <!-- Content -->
     </el-card>
-
-    <!-- Dialog -->
-    <!-- Grant User Dialog -->
-    <!-- <el-dialog
-      v-model="grantUserVisible"
-      title="Grant Acces"
-      @keydown.esc="clearForm()"
-    >
-      <el-form :model="form" :label-position="labelPosition">
-        <el-form-item label="Select User: " :label-width="formLabelWidth">
-          <el-select v-model="form.id" placeholder="Select User">
-            <el-option
-              v-for="users in filteredUsers"
-              :key="users.id"
-              :label="users.fullName"
-              :value="users.id"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="clearForm()">Cancel</el-button>
-          <el-button type="primary" @click="checkExistingUserDb()"
-            >Confirm</el-button
-          >
-        </span>
-      </template>
-    </el-dialog> -->
-    <!-- Grant User Dialog -->
-
     <!-- Delete Dialog -->
     <el-dialog v-model="removeGrantVisible" title="Warning" width="30%" center>
       <span text-align="center"
