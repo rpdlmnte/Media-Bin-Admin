@@ -147,15 +147,6 @@ export default defineComponent({
     };
   },
   computed: {
-    filteredApplications() {
-      return this.listOfApplications.filter((application) => {
-        // check if the user has been granted access
-        const grantedApplication = this.listOfGrantedApplications.find(
-          (active) => active.appId === application.appID,
-        );
-        return !grantedApplication || !grantedApplication.isActive;
-      });
-    },
     ...mapGetters({
       user: "returnUserRole",
       oidcUser: "oidcStore/oidcUser",
@@ -170,13 +161,13 @@ export default defineComponent({
         appLink: "",
       };
     },
-
     async getGrantedApplications() {
       this.loading = true;
       await api
         .get("AppPermission")
         .then((response) => {
           this.listOfGrantedApplications = response.data;
+          console.log(this.listOfApplications);
         })
         .catch((error) => {
           ElMessage.error("Failed to retrieve data from the server.");
@@ -200,6 +191,7 @@ export default defineComponent({
         this.grantApplicationVisible = false;
         this.getGrantedApplications();
         ElMessage.success("Application successfully granted access.");
+        selectedUser.isActive = true;
       } catch (error) {
         ElMessage.error("Error adding grant.");
       }
